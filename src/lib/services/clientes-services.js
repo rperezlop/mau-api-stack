@@ -13,12 +13,35 @@ const clientesServices = {
             return handleMessage.statusCode(200).message(clientes).get();
 
         } catch (err) {
-            Errr.newError(Errors.CreateClientes.Message)
-            .set('errorCode', Errors.CreateClientes.Code)
+            Errr.newError(Errors.ObtenerClientesAll.Message)
+            .set('errorCode', Errors.ObtenerClientesAll.Code)
             .debug(data)
             .appendTo(err).throw(); 
         }
-    }
+    },
+
+    async createCliente(data) {
+       console.log('ESTE ES EL SERVICIO',data);
+        try {
+            data.statusId = 1; //Activo
+            const { identification } = data;
+            const existsClienteByIdentification = await clientesReposotory.existsClienteByIdentification(identification)
+
+            if (existsClienteByIdentification && Object.keys(existsClienteByIdentification).length) {
+                return handleMessage.statusCode(400).message(`Ya se encuentra un cliente registrado con esta identificacion ${identification}`).get();
+            }
+            else {
+                await clientesReposotory.createCliente(data);
+                return handleMessage.statusCode(200).message(`Zona credada con exito`).get();
+            }
+        } catch (err) {
+            Errr.newError(Errors.CreateCliente.Message)
+                .set('errorCode', Errors.CreateCliente.Code)
+                .debug(data)
+                .appendTo(err).throw();
+        }
+
+    },
 }
 
 module.exports = clientesServices;

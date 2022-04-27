@@ -13,5 +13,15 @@ const clientesController = {
         }
     },
 
+    async createCliente(req, res) {
+        try {
+            const result = await clientesServices.createCliente(req.body);
+            return res.status(result.code).json(result.data);
+
+        } catch (err) {
+            handleError(err, req, res);
+        }
+
+    },
 }
 module.exports = clientesController;
