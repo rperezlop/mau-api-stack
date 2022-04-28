@@ -21,7 +21,6 @@ const clientesServices = {
     },
 
     async createCliente(data) {
-       console.log('ESTE ES EL SERVICIO',data);
         try {
             data.statusId = 1; //Activo
             const { identification } = data;
@@ -42,6 +41,49 @@ const clientesServices = {
         }
 
     },
-}
 
+    async updateCliente(data) {
+        console.log('DESDE EL SERVICIO',data);
+        try {
+
+            const { clienteId, identification } = data;
+            const statusId = 1; //Avtivo
+            const isExistClienteById = await clientesReposotory.existsClienteById(clienteId, statusId);
+            const existIdentification = await clientesReposotory.existsClienteByIdentificationToUpdate(clienteId, identification);
+
+            if (isExistClienteById) {
+
+                if (existIdentification) {
+                    return handleMessage.statusCode(400).message(`Ya existe un cliente con este número de identificación: ${identification}`).get();
+                }
+                await clientesReposotory.updateCliente(data);
+                return handleMessage.statusCode(200).message('Cliente editado con exito').get();
+            }
+            return handleMessage.statusCode(400).message('Este cliente no se encuentra registrado').get();
+
+        } catch (err) {
+            Errr.newError(Errors.UpdateCliente.Message)
+                .set('errorCode', Errors.UpdateCliente.Code)
+                .debug(data)
+                .appendTo(err).throw();
+        }
+    },
+
+    async deleteClientes (data){
+        try {
+            const statusId = 3; //Elimindo
+            const { listClienteId } = data;
+            await clientesReposotory.deleteClientes(listClienteId, statusId);
+      
+            const message = listClienteId.length > 1 ? 'Cliente eliminados con exito' : 'cliente eliminado con exito';
+            return handleMessage.statusCode(200).message(message).get();
+      
+          } catch (err) {
+            Errr.newError(Errors.DeleteClientes.Message)
+              .set('errorCode', Errors.DeleteClientes.Code)
+              .debug(data)
+              .appendTo(err).throw();
+          }
+        },
+    }
 module.exports = clientesServices;

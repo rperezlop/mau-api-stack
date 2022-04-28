@@ -3,34 +3,67 @@ const conection = require('../../database/conexion');
 const clientesSql = {
 
     getClientes: `
-        SELECT clientes.id,
-        clientes.identification,
-        clientes.names,
-        clientes.last_name AS lastName,
-        clientes.phone, 
-        clientes.email,
-        clientes.address,
-        plans.name AS namePlan,
-        plans.price AS pricePlan,
-        destinations.name AS nameDestination,
-        clientes.created_at AS createdAt
-        FROM ${conection.database}.clientes 
-        INNER JOIN ${conection.database}.planes plans ON clientes.plans_id = plans.id
-        INNER JOIN ${conection.database}.destinos destinations ON clientes.destination_id = destinations.id
-        WHERE clientes.status_id != ?
-        ORDER BY clientes.names ASC      
+    SELECT clientes.id,
+    tiId.name AS idType,
+    clientes.identification,
+    clientes.names,
+    clientes.last_name AS lastName,
+    clientes.ciudad,
+    clientes.address,
+    clientes.phone, 
+    clientes.email
+    FROM ${conection.database}.clientes 
+    INNER JOIN ${conection.database}.identification_type tiId ON clientes.identification_type_id = tiId.id
+    WHERE clientes.status_id != ?
+    ORDER BY clientes.names ASC   
     `,
+
     existsClienteByIdentification: `
-       SELECT identification
+       SELECT id
        FROM ${conection.database}.clientes 
        WHERE identification = ?
-       LIMIT 1
     `,
+
+    existsClienteByIdentificationToUpdate: `
+       SELECT  identification 
+       FROM ${conection.database}.clientes
+       WHERE id != ? AND identification = ? 
+    `,
+
+    existsClienteById: `
+       SELECT *
+       FROM ${conection.database}.clientes
+       WHERE id = ? AND status_id = ? LIMIT 1
+        `,
+
     createCliente: `
       INSERT INTO ${conection.database}.clientes
-      (identification_type, identification, names, last_name, phone, email, address, plans_id, destination_id, status_id,created_at)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)  
+      (identification_type_id, identification, names, last_name, ciudad, address, phone, email, status_id)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)  
     `,
+
+    updateCliente: `
+    UPDATE ${conection.database}.clientes
+    SET 
+    identification_type_id = ?,
+    identification = ?,
+    names = ?,
+    last_name = ?, 
+    ciudad = ?,
+    address = ?,
+    phone = ?,
+    email = ?
+    WHERE id = ?
+    `,
+
+    deleteClientes: `
+    UPDATE ${conection.database}. clientes
+     SET 
+     status_id = ?
+     WHERE id IN(?)
+    `,
+
+
 
 }
 module.exports = clientesSql;
