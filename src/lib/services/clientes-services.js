@@ -43,7 +43,7 @@ const clientesServices = {
     },
 
     async updateCliente(data) {
-        console.log('DESDE EL SERVICIO',data);
+
         try {
 
             const { clienteId, identification } = data;

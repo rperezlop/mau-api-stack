@@ -5,7 +5,6 @@ const clientesQuery = require('../sql/clientes-sql')
 const clientesRepository = {
 
     async getClientes(params) {
-        console.log(params);
         return await conection.query(clientesQuery.getClientes, params);
     },
 
@@ -32,27 +31,25 @@ const clientesRepository = {
         const params = [
             data.identificationTypeId,
             data.identification,
-            data.names, 
+            data.name, 
             data.lastName,
-            data.ciudad,
+            data.town,
             data.address,
             data.phone,
             data.email,
             data.statusId
-            
-           
+
         ];
         return await conection.query(clientesQuery.createCliente, params);
     },
 
     async updateCliente(data) {
-        console.log('DESDE EL REPOSITORY');
         const params = [
             data.identificationTypeId,
             data.identification,
-            data.names, 
+            data.name, 
             data.lastName,
-            data.ciudad,
+            data.town,
             data.address,
             data.phone,
             data.email,
@@ -61,7 +58,7 @@ const clientesRepository = {
         ];
         return await  conection.query(clientesQuery.updateCliente, params);
     },
-    
+
     async deleteClientes(listClienteId, statusId) {
         const params = [statusId, listClienteId];
         return await conection.query(clientesQuery.deleteClientes, params);

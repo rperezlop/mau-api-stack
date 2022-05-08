@@ -15,14 +15,14 @@ const createClienteValidator = (data) => {
                 .max(12, 'la identificación debe ser menor o igual a 12')
                 .min(1, 'la identificación debe ser mayor 1')
                 .required('El campo identificación es requerido'),
-        names:
+        name:
             yup.string()
                 .required('El campo nombres es requerido'),
 
         lastName:
             yup.string()
                 .required('El campo apellidos es requerido'),
-        ciudad:
+                town:
                 yup.string()
                     .required('El campo ciudad es requerido'),
         address:
